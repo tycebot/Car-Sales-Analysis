@@ -1,28 +1,90 @@
 ### Data Cleaning
+
+#Disable safe updates to enable edits
+SET SQL_SAFE_UPDATES=0;
+
+# Create table for data transformations
+DROP TABLE IF EXISTS car_prices_cleaned;
+CREATE TABLE car_prices_cleaned AS 
+SELECT * FROM car_prices;
+
+# Standardizing empty fields in text columns
+UPDATE car_prices_cleaned
+SET make=NULL
+WHERE make='';
+
+UPDATE car_prices_cleaned
+SET model=NULL
+WHERE model='';
+
+UPDATE car_prices_cleaned
+SET trim=NULL
+WHERE trim='';
+
+UPDATE car_prices_cleaned
+SET body=NULL
+WHERE body='';
+
+UPDATE car_prices_cleaned
+SET transmission=NULL
+WHERE transmission='';
+
+UPDATE car_prices_cleaned
+SET color=NULL
+WHERE color='';
+
+UPDATE car_prices_cleaned
+SET interior=NULL
+WHERE interior='';
+
+UPDATE car_prices_cleaned
+SET vin=NULL
+WHERE vin='';
+
+#Verify empty values have been replaced with Null
+SELECT COUNT(*) FROM car_prices_cleaned
+WHERE make='' OR
+model='' OR
+trim='' OR
+body='' OR
+transmission='' OR
+color='' OR
+interior='' OR
+vin='' OR
+state='' OR
+car_condition='' OR 
+odometer='' OR
+seller='' OR
+mmr='' OR 
+selling_price='';
+
+
+ 
+## Dealing with Null Values
 WITH NullCounts AS (
     SELECT  
-        SUM(CASE WHEN model_year IS NULL OR model_year = '' THEN 1 ELSE 0 END) AS null_year_count,
-        SUM(CASE WHEN make IS NULL OR make = '' THEN 1 ELSE 0 END) AS null_make_count,
-        SUM(CASE WHEN model IS NULL OR model = '' THEN 1 ELSE 0 END) AS null_model_count,
-        SUM(CASE WHEN trim IS NULL OR trim = '' THEN 1 ELSE 0 END) AS null_trim_count,
-        SUM(CASE WHEN body IS NULL OR body = '' THEN 1 ELSE 0 END) AS null_body_count,
-        SUM(CASE WHEN transmission IS NULL OR transmission = '' THEN 1 ELSE 0 END) AS null_transmission_count,
-        SUM(CASE WHEN vin IS NULL OR vin = '' THEN 1 ELSE 0 END) AS null_vin_count,
-        SUM(CASE WHEN state IS NULL OR state = '' THEN 1 ELSE 0 END) AS null_state_count,
-        SUM(CASE WHEN car_condition IS NULL OR car_condition = '' THEN 1 ELSE 0 END) AS null_carcondition_count,
-        SUM(CASE WHEN odometer IS NULL OR odometer = '' THEN 1 ELSE 0 END) AS null_odometer_count,
-        SUM(CASE WHEN color IS NULL OR color = '' THEN 1 ELSE 0 END) AS null_color_count,
-        SUM(CASE WHEN interior IS NULL OR interior = '' THEN 1 ELSE 0 END) AS null_interior_count,
-        SUM(CASE WHEN seller IS NULL OR seller = '' THEN 1 ELSE 0 END) AS null_seller_count,
-        SUM(CASE WHEN mmr IS NULL OR mmr = '' THEN 1 ELSE 0 END) AS null_mmr_count,
-        SUM(CASE WHEN selling_price IS NULL OR selling_price = '' THEN 1 ELSE 0 END) AS null_sellingprice_count,
-        SUM(CASE WHEN sale_date IS NULL OR sale_date = '' THEN 1 ELSE 0 END) AS null_saledate_count
-    FROM car_prices
+        SUM(CASE WHEN model_year IS NULL THEN 1 ELSE 0 END) AS null_year_count,
+        SUM(CASE WHEN make IS NULL THEN 1 ELSE 0 END) AS null_make_count,
+        SUM(CASE WHEN model IS NULL THEN 1 ELSE 0 END) AS null_model_count,
+        SUM(CASE WHEN trim IS NULL THEN 1 ELSE 0 END) AS null_trim_count,
+        SUM(CASE WHEN body IS NULL THEN 1 ELSE 0 END) AS null_body_count,
+        SUM(CASE WHEN transmission IS NULL THEN 1 ELSE 0 END) AS null_transmission_count,
+        SUM(CASE WHEN vin IS NULL THEN 1 ELSE 0 END) AS null_vin_count,
+        SUM(CASE WHEN state IS NULL THEN 1 ELSE 0 END) AS null_state_count,
+        SUM(CASE WHEN car_condition IS NULL THEN 1 ELSE 0 END) AS null_carcondition_count,
+        SUM(CASE WHEN odometer IS NULL THEN 1 ELSE 0 END) AS null_odometer_count,
+        SUM(CASE WHEN color IS NULL THEN 1 ELSE 0 END) AS null_color_count,
+        SUM(CASE WHEN interior IS NULL THEN 1 ELSE 0 END) AS null_interior_count,
+        SUM(CASE WHEN seller IS NULL THEN 1 ELSE 0 END) AS null_seller_count,
+        SUM(CASE WHEN mmr IS NULL THEN 1 ELSE 0 END) AS null_mmr_count,
+        SUM(CASE WHEN selling_price IS NULL THEN 1 ELSE 0 END) AS null_sellingprice_count,
+        SUM(CASE WHEN sale_date IS NULL THEN 1 ELSE 0 END) AS null_saledate_count
+    FROM car_prices_cleaned
 ),
 total_rows AS (
-    SELECT COUNT(*) AS total_count FROM car_prices
+    SELECT COUNT(*) AS total_count FROM car_prices_cleaned
 )
-SELECT
+SELECT *,
        CONCAT(null_year_count / total_rows.total_count * 100,'%') AS null_year_percentage,
        CONCAT(null_make_count / total_rows.total_count * 100,'%') AS null_make_percentage,
        CONCAT(null_model_count / total_rows.total_count * 100,'%') AS null_model_percentage,
@@ -47,13 +109,61 @@ SELECT
        ) AS total_null_percentage
 FROM NullCounts, total_rows;
 
-## For the columns that are less than 1% null or contain strings we will discard the null values otherwise we will impute the value
+## Discarding rows with null values in colums that are less than 1% null
+DELETE FROM car_prices_cleaned 
+WHERE vin IS NULL OR 
+odometer IS NULL OR 
+color IS NULL OR 
+interior IS NULL OR 
+mmr IS NULL OR 
+selling_price IS NULL;
+
+## Replacing values in text columns that are at least 1% null with unknown
+UPDATE car_prices_cleaned
+SET make='unknown'
+WHERE make IS NULL ;
+
+UPDATE car_prices_cleaned
+SET model='unknown'
+WHERE model IS NULL ;
+
+UPDATE car_prices_cleaned
+SET trim='unknown'
+WHERE trim IS NULL ;
+
+UPDATE car_prices_cleaned
+SET body='unknown'
+WHERE body IS NULL ;
+
+UPDATE car_prices_cleaned
+SET transmission='unknown'
+WHERE transmission IS NULL ;
+
+## For columns at least 1% null that are integers we will impute the value using the avg for the make,model,mileage, and price
+UPDATE car_prices_cleaned c1
+JOIN (
+    SELECT make, model, AVG(car_condition) AS avg_condition
+    FROM car_prices_cleaned
+    WHERE car_condition IS NOT NULL
+    GROUP BY make, model
+) c2 
+ON c1.make = c2.make AND c1.model = c2.model
+SET c1.car_condition = c2.avg_condition
+WHERE c1.car_condition IS NULL;
+
+## For the 22 rows remaining that dont have a valid car_condition assoicated with the make and model we will drop
+DELETE FROM car_prices_cleaned
+WHERE car_condition IS NULL;
 
 
+## Converting sale dates to pst then creating a new column from the day of the week and converting original column to datetime
+SELECT COUNT(*) FROM car_prices_cleaned
+WHERE car_condition IS NULL;
+#Remove values from odometer greater than 800000 as it seems to have been used as artifical cap  for dataset
+SELECT DISTINCT(car_condition) FROM car_prices_cleaned
 
-## Counting Number of illogical values in the data column
+WHERE odometer>500000;
 
 
-
-
-
+#Renable safe updates to enable edits
+SET SQL_SAFE_UPDATES=1;
