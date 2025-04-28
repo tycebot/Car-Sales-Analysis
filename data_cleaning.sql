@@ -41,6 +41,14 @@ UPDATE car_prices_cleaned
 SET vin=NULL
 WHERE vin='';
 
+UPDATE car_prices_cleaned
+SET interior=NULL
+WHERE interior = '—';
+
+UPDATE car_prices_cleaned
+SET color=NULL
+WHERE color = '—';
+
 #Verify empty values have been replaced with Null
 SELECT COUNT(*) FROM car_prices_cleaned
 WHERE make='' OR
@@ -151,19 +159,86 @@ ON c1.make = c2.make AND c1.model = c2.model
 SET c1.car_condition = c2.avg_condition
 WHERE c1.car_condition IS NULL;
 
-## For the 22 rows remaining that dont have a valid car_condition assoicated with the make and model we will drop
+## The 22 rows remaining that dont have a valid car_condition assoicated with the make and model will be dropped
 DELETE FROM car_prices_cleaned
 WHERE car_condition IS NULL;
 
+## Standardizing make and model names
+SELECT DISTINCT(make) FROM car_prices_cleaned
+ORDER BY make;
 
-## Converting sale dates to pst then creating a new column from the day of the week and converting original column to datetime
-SELECT COUNT(*) FROM car_prices_cleaned
-WHERE car_condition IS NULL;
-#Remove values from odometer greater than 800000 as it seems to have been used as artifical cap  for dataset
-SELECT DISTINCT(car_condition) FROM car_prices_cleaned
+UPDATE car_prices_cleaned
+SET make='Volkswagen'
+WHERE make='vw';
 
-WHERE odometer>500000;
+UPDATE car_prices_cleaned
+SET make='Dodge'
+WHERE make='dodge tk' OR make='dot';
 
+UPDATE car_prices_cleaned
+SET make='Ford'
+WHERE make='ford tk' OR make='ford truck';
 
-#Renable safe updates to enable edits
+UPDATE car_prices_cleaned
+SET make='GMC' 
+WHERE make='gmc truck';
+
+UPDATE car_prices_cleaned
+SET make='Mercedes-Benz' 
+WHERE make='mercedes' OR make='mercedes-b';
+
+UPDATE car_prices_cleaned
+SET model='Uplander' 
+WHERE model='uplandr';
+
+UPDATE car_prices_cleaned
+SET model='Town & Country' 
+WHERE model='twn&country' OR model='twn/cntry' OR model='Town and Country' OR model='town';
+
+UPDATE car_prices_cleaned
+SET model='RX-8' 
+WHERE model='rx8';
+
+UPDATE car_prices_cleaned
+SET model='Range Rover' 
+WHERE model='rangerover' OR model='range';
+
+UPDATE car_prices_cleaned
+SET model='Expedition' 
+WHERE model='expeditn' OR model='expedit';
+
+UPDATE car_prices_cleaned
+SET model='Excursion' 
+WHERE model='excurs';
+
+#Remove values of 999999 from odometer since it seems to have been used as an arbitrary value for unknown fields
+DELETE FROM car_prices_cleaned
+WHERE odometer=999999;
+
+## Converting sale dates to datetime then creating new columns for the day of the week,month,and year
+UPDATE car_prices_cleaned 
+SET sale_date = STR_TO_DATE(SUBSTRING_INDEX(sale_date, ' GMT', 1), '%a %b %d %Y %H:%i:%s');
+
+ALTER TABLE car_prices_cleaned 
+MODIFY sale_date DATETIME;
+
+ALTER TABLE car_prices_cleaned
+ADD COLUMN sale_weekday VARCHAR(10);
+
+ALTER TABLE car_prices_cleaned
+ADD COLUMN sale_year INT;
+
+ALTER TABLE car_prices_cleaned
+ADD COLUMN sale_month INT;
+
+UPDATE car_prices_cleaned
+SET sale_weekday=DAYNAME(sale_date);
+
+UPDATE car_prices_cleaned
+SET sale_year=EXTRACT(YEAR FROM sale_date);
+
+UPDATE car_prices_cleaned
+SET sale_month=EXTRACT(MONTH FROM sale_date);
+
+#Re enable safe updates to enable edits
 SET SQL_SAFE_UPDATES=1;
