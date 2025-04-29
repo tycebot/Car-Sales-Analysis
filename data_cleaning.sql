@@ -242,3 +242,10 @@ SET sale_month=EXTRACT(MONTH FROM sale_date);
 
 #Re enable safe updates to enable edits
 SET SQL_SAFE_UPDATES=1;
+SELECT * FROM car_prices_cleaned;
+
+SELECT * FROM car_prices_cleaned
+INTO OUTFILE 'C:/Users/Public/Downloads/car_prices_cleaned.csv'
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"' 
+LINES TERMINATED BY '\n';
