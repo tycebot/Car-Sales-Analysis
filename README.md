@@ -15,29 +15,26 @@ Sample record:
 '2014', 'Audi', 'SQ5', '3.0T Premium Plus quattro', 'SUV', 'automatic', 'wa1cgafp4ea030312', 'ca', '42', '9606', 'white', 'black', 'audi of downtown l a', '48600', '47500', '2015-01-29 04:00:00', 'Thursday', '2015', '1'
 ```
 ## Dashboard Links
-https://public.tableau.com/app/profile/terrell.enoru/viz/USAutomotiveSales2014-2015/Dashboard2
 https://public.tableau.com/app/profile/terrell.enoru/viz/CarSalesDashboard2_17463493438490/Dashboard1
+https://public.tableau.com/app/profile/terrell.enoru/viz/USAutomotiveSales2014-2015/Dashboard2
 
 ## Business Questions Addressed
 
 ### Pricing and Value Analysis
-1. Identification of makes/models selling consistently above/below MMR value
-2. Analysis of profit margins by make/model and vehicle condition
-3. Price premiums for specific color and interior combinations
-
-### Inventory Optimization
-4. Average time in inventory by make/model
-5. Vehicle configurations with highest turnover rates
-6. Seasonal sales patterns and trends
-
-### Market Analysis
-7. Correlation between vehicle condition and price differentials
-8. Transmission popularity trends over time
-9. Sales volume analysis by price range and vehicle type
-
-### Seller Performance
-10. Seller performance in achieving margins relative to MMR
-11. Seller specialization and success rates in different market segments
+1. What car sellers get the best margins relative to MMR?
+2. Do certain color-interior combinations command premium prices within the same make/model?
+3. Do rare colors sell for more?
+## Inventory & Market Analysis
+4. What price ranges have the highest sales volume, and how does this vary by vehicle type?
+5. What make-model combinations have the best profit margins?
+6. What percentage of cars are sold above or below their market value, segmented by state?
+7. What months see the highest and lowest sales?
+8. How does car condition affect selling price?
+9. Do newer cars consistently sell at higher prices compared to older ones?
+## Key Performance Indicators (KPIs)
+10. Price per mile
+11. Market Value Variance
+12. Market adjustment ratio
 
 ## Technical Implementation
 
@@ -49,14 +46,16 @@ Each business question is addressed through carefully crafted SQL queries that:
 
 ### Tableau Visualizations
 The SQL results are visualized in Tableau using:
-- Comparative bar charts and heat maps for pricing analysis
-- Time series charts for temporal patterns
-- Scatter plots for correlation analysis
+- Comparative bar charts for pricing analysis
+- Geospatial maps for geographic sales distribution
 - Interactive dashboards with filters for multidimensional exploration
 
 
 ## Key Insights
-- TBD
+- Market Value Trends: Vehicles tend to sell below their MMR more frequently than they sell above it, with a negative variance occurring approximately 4% more often than a positive one. This suggests that market pressures and seller strategies often lead to pricing concessions.
+- Budget Sedan Dominance: Low-cost sedans (under $20K) significantly outperform other body styles and price ranges. In fact, sales volume and total revenue in this category are twice as high as any other segment, reinforcing their appeal among cost-conscious buyers.
+- Color & Pricing Paradox: Despite the common assumption that rare colors command a premium, the data does not support this theory. On the contrary, black—one of the most prevalent colors—has the second highest average selling price. Furthermore, among the top four highest-priced colors, two are also among the most commonly sold, indicating buyer preference trends that defy rarity-based pricing strategies.
+- Regional Pricing Variation: Washington state stands out, with over 60% of vehicles selling above their market value—the highest percentage across all regions analyzed. This suggests stronger pricing power in the state, possibly influenced by local demand, inventory shortages, or dealership strategies
 
 ## Future Enhancements
 - Predictive modeling for optimal pricing
