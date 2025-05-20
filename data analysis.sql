@@ -118,3 +118,28 @@ FROM car_prices_cleaned
 GROUP BY model_year
 HAVING COUNT(*)>100
 ORDER BY model_year;
+
+###KPIs
+
+##10 Price per mile
+SELECT make,model,odometer,car_condition,
+    ROUND((selling_price / odometer), 2) AS price_per_mile
+FROM car_prices_cleaned;
+
+##11 Market value variance
+SELECT make,model,odometer,car_condition,
+     selling_price - mmr AS mvv
+FROM car_prices_cleaned;
+
+##12 Market adjustment ratio
+SELECT make,model,odometer,car_condition,
+     ROUND(((selling_price - mmr)/mmr)*100,2) AS mar
+FROM car_prices_cleaned;
+
+##13 positive vs negative MAR
+SELECT 
+    SUM(CASE WHEN ((selling_price - mmr) / mmr) > 0 THEN 1 ELSE 0 END) AS positive_mar_count,
+    SUM(CASE WHEN ((selling_price - mmr) / mmr) < 0 THEN 1 ELSE 0 END) AS negative_mar_count,
+    ROUND(SUM(CASE WHEN ((selling_price - mmr) / mmr) > 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS positive_mar_pct,
+    ROUND(SUM(CASE WHEN ((selling_price - mmr) / mmr) < 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS negative_mar_pct
+FROM car_prices_cleaned;
