@@ -20,18 +20,18 @@ https://public.tableau.com/app/profile/terrell.enoru/viz/CarSalesDashboard2_1746
 
 ## Business Questions Addressed
 
-###Pricing and Value Analysis
+### Pricing and Value Analysis
 1. What car sellers get the best margins relative to MMR?
 2. Do certain color-interior combinations command premium prices within the same make/model?
 3. Do rare colors sell for more?
-Inventory & Market Analysis
+## Inventory & Market Analysis
 4. What price ranges have the highest sales volume, and how does this vary by vehicle type?
 5. What make-model combinations have the best profit margins?
 6. What percentage of cars are sold above or below their market value, segmented by state?
 7. What months see the highest and lowest sales?
 8. How does car condition affect selling price?
 9. Do newer cars consistently sell at higher prices compared to older ones?
-Key Performance Indicators (KPIs)
+## Key Performance Indicators (KPIs)
 10. Price per mile
 11. Market Value Variance
 12. Market adjustment ratio
