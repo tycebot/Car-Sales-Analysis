@@ -15,8 +15,8 @@ Sample record:
 '2014', 'Audi', 'SQ5', '3.0T Premium Plus quattro', 'SUV', 'automatic', 'wa1cgafp4ea030312', 'ca', '42', '9606', 'white', 'black', 'audi of downtown l a', '48600', '47500', '2015-01-29 04:00:00', 'Thursday', '2015', '1'
 ```
 ## Dashboard Links
-https://public.tableau.com/app/profile/terrell.enoru/viz/USAutomotiveSales2014-2015/Dashboard2
 https://public.tableau.com/app/profile/terrell.enoru/viz/CarSalesDashboard2_17463493438490/Dashboard1
+https://public.tableau.com/app/profile/terrell.enoru/viz/USAutomotiveSales2014-2015/Dashboard2
 
 ## Business Questions Addressed
 
